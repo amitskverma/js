@@ -1,0 +1,206 @@
+# Node.js + Nginx Reverse Proxy (Docker)
+
+## Overview
+
+This project demonstrates how to deploy a **Node.js (Express)** application behind **Nginx** using Docker.
+
+The setup mimics a production environment where:
+
+* Nginx acts as a reverse proxy.
+* Node.js serves the application.
+* Docker packages everything into a container.
+
+---
+
+## Architecture
+
+```text
+Browser
+    │
+localhost:8080
+    │
+Docker Container
+    │
+Nginx (Port 80)
+    │
+Node.js Express (Port 3000)
+```
+
+---
+
+## Project Structure
+
+```text
+.
+├── app.js
+├── package.json
+├── Dockerfile
+├── nginx.conf
+└── README.md
+```
+
+---
+
+## Prerequisites
+
+* Docker Desktop
+* Node.js (for local development)
+* Git
+
+---
+
+## Run Locally
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the application:
+
+```bash
+node app.js
+```
+
+Open:
+
+```
+http://localhost:3000
+```
+
+---
+
+## Build Docker Image
+
+```bash
+docker build -t node-nginx .
+```
+
+---
+
+## Run Docker Container
+
+```bash
+docker run -d \
+  --name node-nginx \
+  -p 8080:80 \
+  node-nginx
+```
+
+---
+
+## Access the Application
+
+Open your browser:
+
+```
+http://localhost:8080
+```
+
+Request flow:
+
+```text
+Browser
+      │
+localhost:8080
+      │
+Docker Port Mapping
+      │
+Nginx
+      │
+Node.js
+```
+
+---
+
+## Verify Container
+
+List running containers:
+
+```bash
+docker ps
+```
+
+View logs:
+
+```bash
+docker logs node-nginx
+```
+
+Open a shell inside the container:
+
+```bash
+docker exec -it node-nginx sh
+```
+
+---
+
+## Stop and Remove Container
+
+Stop:
+
+```bash
+docker stop node-nginx
+```
+
+Remove:
+
+```bash
+docker rm node-nginx
+```
+
+Remove image:
+
+```bash
+docker rmi node-nginx
+```
+
+---
+
+## Nginx Reverse Proxy
+
+Example configuration:
+
+```nginx
+server {
+    listen 80;
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+
+        proxy_http_version 1.1;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+}
+```
+
+---
+
+## Docker Workflow
+
+```text
+Source Code
+      │
+      ▼
+Docker Build
+      │
+      ▼
+Docker Image
+      │
+      ▼
+Docker Container
+      │
+      ▼
+Nginx
+      │
+      ▼
+Node.js Application
+```
+
+---
