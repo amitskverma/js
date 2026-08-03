@@ -1,13 +1,18 @@
 FROM node:22-alpine
 
+# Install nginx
+RUN apk add --no-cache nginx
+
 WORKDIR /app
 
 COPY package*.json ./
-
-RUN npm ci --omit=dev
+RUN npm install
 
 COPY . .
 
-EXPOSE 3000
+# Copy nginx config
+COPY nginx.conf /etc/nginx/nginx.conf
 
-CMD ["npm", "start"]
+EXPOSE 80
+
+CMD sh -c "npm start & nginx -g 'daemon off;'"
