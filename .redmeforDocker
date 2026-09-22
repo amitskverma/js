@@ -1,0 +1,17 @@
+Stage 1: build
+    ↓
+node:22-alpine
+    ↓
+npm ci
+    ↓
+copy application
+    ↓
+        Stage 2: runtime
+              ↓
+        node:22-alpine
+              +
+            nginx
+              ↓
+        copy required files
+              ↓
+        run application
